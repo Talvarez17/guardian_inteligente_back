@@ -6,6 +6,10 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RolesModule } from './modules/roles/roles.module';
+import { DocumentalAreaModule } from './modules/documental-area/documental-area.module';
+import { DocumentTypeModule } from './modules/document-type/document-type.module';
+import { PlanFeatureModule } from './modules/plan-feature/plan-feature.module';
+import { PlansModule } from './modules/plans/plans.module';
 
 @Module({
   imports: [UsersModule, AuthModule, ConfigModule.forRoot({ isGlobal: true }),
@@ -23,7 +27,11 @@ import { RolesModule } from './modules/roles/roles.module';
         synchronize: true,
       }),
     }),
-      RolesModule,],
+      RolesModule,
+      DocumentalAreaModule,
+      DocumentTypeModule,
+      PlanFeatureModule,
+      PlansModule,],
   controllers: [AppController],
   providers: [AppService],
 })

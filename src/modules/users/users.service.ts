@@ -8,6 +8,11 @@ import * as bcrypt from 'bcrypt';
 import { ChangePassDTO } from './dto/change-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { RolesService } from '../roles/roles.service';
+import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
+import { PaginatedResponse } from '../../common/dto/paginated-response.dto';
+import { buildPaginationMeta } from '../../common/utils/pagination.util';
+
+const SORTABLE_FIELDS = ['name', 'firstLastName', 'email', 'status', 'createdAt'];
 
 
 @Injectable()
@@ -42,11 +47,32 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  getAllUser(): Promise<User[]> {
-    return this.usersRepository.find();
+  async findAllUsers(query: PaginationQueryDto): Promise<PaginatedResponse<User>> {
+    const { page, limit, sortBy, order, search } = query;
+
+    const sortField = SORTABLE_FIELDS.includes(sortBy ?? '') ? sortBy! : 'createdAt';
+
+    const qb = this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.role', 'role');
+
+    if (search) {
+      qb.where(
+        'user.name ILIKE :search OR user.firstLastName ILIKE :search OR user.secondLastName ILIKE :search OR user.email ILIKE :search',
+        { search: `%${search}%` },
+      );
+    }
+
+    qb.orderBy(`user.${sortField}`, order)
+      .skip((page - 1) * limit)
+      .take(limit);
+
+    const [data, total] = await qb.getManyAndCount();
+
+    return { data, meta: buildPaginationMeta(total, page, limit) };
   }
 
-  async findUser(id: string): Promise<User> {
+  async findOneUser(id: string): Promise<User> {
     const user = await this.usersRepository.findOne({
       where: { id }
     })
@@ -58,7 +84,7 @@ export class UsersService {
   }
 
   async updateUser(id: string, updateUser: UpdateUserDto): Promise<User> {
-    const user = await this.findUser(id);
+    const user = await this.findOneUser(id);
 
     const { roleId, ...updateData } = updateUser;
 
@@ -72,8 +98,8 @@ export class UsersService {
 
   }
 
-  async softDeleteUser(id: string): Promise<{ message: string }> {
-    const user = await this.findUser(id);
+  async deleteUser(id: string): Promise<{ message: string }> {
+    const user = await this.findOneUser(id);
 
     user.status = false;
     await this.usersRepository.save(user);
@@ -110,7 +136,7 @@ export class UsersService {
   }
 
   async resetPassword(id: string, dto: ResetPasswordDto): Promise<{ message: string }> {
-    const user = await this.findUser(id);
+    const user = await this.findOneUser(id);
 
     user.password = await bcrypt.hash(dto.newPassword, 10);
     await this.usersRepository.save(user);

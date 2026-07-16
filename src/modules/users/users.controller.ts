@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -8,6 +8,8 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
+import { ApiPaginatedQuery } from '../../common/decorators/api-paginated-query.decorator';
 
 @ApiTags('users')
 @Controller('users')
@@ -27,11 +29,12 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Get('/getAll')
-  @ApiOperation({ summary: 'List all users' })
-  @ApiResponse({ status: 200, description: 'List of users' })
-  
-  findAll() {
-    return this.usersService.getAllUser();
+  @ApiOperation({ summary: 'List all users (paginated, sortable, searchable by name/lastname/email)' })
+  @ApiPaginatedQuery()
+  @ApiResponse({ status: 200, description: 'Paginated list of users' })
+
+  findAll(@Query() query: PaginationQueryDto) {
+    return this.usersService.findAllUsers(query);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -43,7 +46,7 @@ export class UsersController {
   @ApiResponse({ status: 404, description: 'User not found' })
   
   findOne(@Param('id') id: string) {
-    return this.usersService.findUser(id)
+    return this.usersService.findOneUser(id)
   }
 
   @UseGuards(JwtAuthGuard)
@@ -67,7 +70,7 @@ export class UsersController {
   @ApiResponse({ status: 404, description: 'User not found' })
   
   remove(@Param('id') id: string) {
-    return this.usersService.softDeleteUser(id);
+    return this.usersService.deleteUser(id);
   }
 
   @UseGuards(JwtAuthGuard)
