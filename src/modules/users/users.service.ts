@@ -8,6 +8,7 @@ import * as bcrypt from 'bcrypt';
 import { ChangePassDTO } from './dto/change-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { RolesService } from '../roles/roles.service';
+import { DocumentalAreaService } from '../documental-area/documental-area.service';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { PaginatedResponse } from '../../common/dto/paginated-response.dto';
 import { buildPaginationMeta } from '../../common/utils/pagination.util';
@@ -22,6 +23,7 @@ export class UsersService {
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
     private readonly rolesService: RolesService,
+    private readonly documentalAreaService: DocumentalAreaService,
   ) { }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
@@ -34,14 +36,19 @@ export class UsersService {
 
     const role = await this.rolesService.findOneRole(createUserDto.roleId);
 
+    const documentalArea = createUserDto.documentalAreaId
+      ? await this.documentalAreaService.findOneArea(createUserDto.documentalAreaId)
+      : undefined;
+
     const hashPass = await bcrypt.hash(createUserDto.password, 10);
 
-    const { roleId, ...userData } = createUserDto;
+    const { roleId, documentalAreaId, ...userData } = createUserDto;
 
     const user = this.usersRepository.create({
       ...userData,
       password: hashPass,
       role,
+      documentalArea,
     })
 
     return this.usersRepository.save(user);
@@ -86,12 +93,16 @@ export class UsersService {
   async updateUser(id: string, updateUser: UpdateUserDto): Promise<User> {
     const user = await this.findOneUser(id);
 
-    const { roleId, ...updateData } = updateUser;
+    const { roleId, documentalAreaId, ...updateData } = updateUser;
 
     Object.assign(user, updateData);
 
     if (roleId) {
       user.role = await this.rolesService.findOneRole(roleId);
+    }
+
+    if (documentalAreaId) {
+      user.documentalArea = await this.documentalAreaService.findOneArea(documentalAreaId);
     }
 
     return this.usersRepository.save(user);

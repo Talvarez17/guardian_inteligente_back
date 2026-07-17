@@ -35,4 +35,10 @@ export class CreateUserDto {
     @IsPositive()
     roleId: number
 
+    @ApiProperty({ example: 1, description: 'Id of the documental area this user is responsible for', required: false })
+    @IsOptional()
+    @IsInt()
+    @IsPositive()
+    documentalAreaId?: number
+
 }

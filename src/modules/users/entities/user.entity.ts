@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { Role } from '../../roles/entities/role.entity';
+import { DocumentalArea } from '../../documental-area/entities/documental-area.entity';
 
 @Entity('users')
 export class User {
@@ -30,6 +31,10 @@ export class User {
     @ManyToOne(() => Role, { eager: true })
     @JoinColumn({ name: 'roleId' })
     role: Role;
+
+    @ManyToOne(() => DocumentalArea, { eager: true, nullable: true })
+    @JoinColumn({ name: 'documentalAreaId' })
+    documentalArea?: DocumentalArea;
 
     @CreateDateColumn()
     createdAt: Date;

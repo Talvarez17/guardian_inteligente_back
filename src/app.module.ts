@@ -10,6 +10,9 @@ import { DocumentalAreaModule } from './modules/documental-area/documental-area.
 import { DocumentTypeModule } from './modules/document-type/document-type.module';
 import { PlanFeatureModule } from './modules/plan-feature/plan-feature.module';
 import { PlansModule } from './modules/plans/plans.module';
+import { EstablishmentModule } from './modules/establishment/establishment.module';
+import { TurnoverModule } from './modules/turnover/turnover.module';
+import { DocumentsModule } from './modules/documents/documents.module';
 
 @Module({
   imports: [UsersModule, AuthModule, ConfigModule.forRoot({ isGlobal: true }),
@@ -31,7 +34,10 @@ import { PlansModule } from './modules/plans/plans.module';
       DocumentalAreaModule,
       DocumentTypeModule,
       PlanFeatureModule,
-      PlansModule,],
+      PlansModule,
+      EstablishmentModule,
+      TurnoverModule,
+      DocumentsModule,],
   controllers: [AppController],
   providers: [AppService],
 })
