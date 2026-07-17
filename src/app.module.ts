@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
@@ -16,6 +18,12 @@ import { DocumentsModule } from './modules/documents/documents.module';
 
 @Module({
   imports: [UsersModule, AuthModule, ConfigModule.forRoot({ isGlobal: true }),
+      ThrottlerModule.forRoot([
+        {
+          ttl: 60000,
+          limit: 100,
+        },
+      ]),
       TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -39,6 +47,12 @@ import { DocumentsModule } from './modules/documents/documents.module';
       TurnoverModule,
       DocumentsModule,],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule { }
