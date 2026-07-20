@@ -4,10 +4,23 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Role } from '../roles/entities/role.entity';
 import { User } from '../users/entities/user.entity';
+import { ChecklistItemType } from '../checklist-item-type/entities/checklist-item-type.entity';
 
 const ADMIN_ROLE_NAME = 'admin';
 const ADMIN_EMAIL = 'a@a.com';
 const ADMIN_PASSWORD = '@@HOla12';
+
+const CHECKLIST_ITEM_TYPES = [
+  'documentation',
+  'contract',
+  'instalation',
+  'software_instalation',
+  'signals',
+  'report',
+  'faces',
+  'db',
+  'csf',
+];
 
 @Injectable()
 export class SeedService implements OnApplicationBootstrap {
@@ -16,6 +29,7 @@ export class SeedService implements OnApplicationBootstrap {
   constructor(
     @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(ChecklistItemType) private readonly checklistItemTypeRepository: Repository<ChecklistItemType>,
   ) { }
 
   async onApplicationBootstrap() {
@@ -41,6 +55,15 @@ export class SeedService implements OnApplicationBootstrap {
 
       await this.userRepository.save(admin);
       this.logger.log(`Admin user "${ADMIN_EMAIL}" created`);
+    }
+
+    for (const name of CHECKLIST_ITEM_TYPES) {
+      const exists = await this.checklistItemTypeRepository.findOne({ where: { name } });
+
+      if (!exists) {
+        await this.checklistItemTypeRepository.save(this.checklistItemTypeRepository.create({ name }));
+        this.logger.log(`Checklist item type "${name}" created`);
+      }
     }
   }
 }

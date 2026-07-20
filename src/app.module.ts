@@ -8,6 +8,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RolesModule } from './modules/roles/roles.module';
+import { ClientRolesModule } from './modules/client-roles/client-roles.module';
 import { DocumentalAreaModule } from './modules/documental-area/documental-area.module';
 import { DocumentTypeModule } from './modules/document-type/document-type.module';
 import { PlanFeatureModule } from './modules/plan-feature/plan-feature.module';
@@ -16,6 +17,14 @@ import { EstablishmentModule } from './modules/establishment/establishment.modul
 import { TurnoverModule } from './modules/turnover/turnover.module';
 import { DocumentsModule } from './modules/documents/documents.module';
 import { SeedModule } from './modules/seed/seed.module';
+import { PaymentMethodModule } from './modules/payment-method/payment-method.module';
+import { PaymentFormModule } from './modules/payment-form/payment-form.module';
+import { ChecklistItemTypeModule } from './modules/checklist-item-type/checklist-item-type.module';
+import { EstablishmentContactModule } from './modules/establishment-contact/establishment-contact.module';
+import { EstablishmentOperationModule } from './modules/establishment-operation/establishment-operation.module';
+import { EstablishmentBillingModule } from './modules/establishment-billing/establishment-billing.module';
+import { EstablishmentChecklistItemModule } from './modules/establishment-checklist-item/establishment-checklist-item.module';
+import { PaymentRecordModule } from './modules/payment-record/payment-record.module';
 
 @Module({
   imports: [UsersModule, AuthModule, ConfigModule.forRoot({ isGlobal: true }),
@@ -40,6 +49,7 @@ import { SeedModule } from './modules/seed/seed.module';
       }),
     }),
       RolesModule,
+      ClientRolesModule,
       DocumentalAreaModule,
       DocumentTypeModule,
       PlanFeatureModule,
@@ -47,6 +57,14 @@ import { SeedModule } from './modules/seed/seed.module';
       EstablishmentModule,
       TurnoverModule,
       DocumentsModule,
+      PaymentMethodModule,
+      PaymentFormModule,
+      ChecklistItemTypeModule,
+      EstablishmentContactModule,
+      EstablishmentOperationModule,
+      EstablishmentBillingModule,
+      EstablishmentChecklistItemModule,
+      PaymentRecordModule,
       SeedModule,],
   controllers: [AppController],
   providers: [

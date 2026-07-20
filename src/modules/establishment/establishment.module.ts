@@ -11,5 +11,6 @@ import { UsersModule } from '../users/users.module';
   imports: [TypeOrmModule.forFeature([Establishment]), PlansModule, TurnoverModule, UsersModule],
   controllers: [EstablishmentController],
   providers: [EstablishmentService],
+  exports: [EstablishmentService],
 })
 export class EstablishmentModule {}

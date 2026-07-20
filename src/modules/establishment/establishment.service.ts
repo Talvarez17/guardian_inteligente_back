@@ -11,7 +11,7 @@ import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { PaginatedResponse } from '../../common/dto/paginated-response.dto';
 import { buildPaginationMeta } from '../../common/utils/pagination.util';
 
-const SORTABLE_FIELDS = ['name', 'business_name', 'rfc', 'city', 'state', 'status', 'risk', 'monthly_bill', 'cameras'];
+const SORTABLE_FIELDS = ['name', 'business_name', 'rfc', 'city', 'state', 'establishment_status'];
 
 @Injectable()
 export class EstablishmentService {
@@ -32,16 +32,6 @@ export class EstablishmentService {
 
     if (rfcExists) {
       throw new ConflictException('RFC already in use');
-    }
-
-    const emailExists = await this.establishmentRepository.findOne({
-      where: [
-        { email: createEstablishmentDto.email },
-      ],
-    })
-
-    if (emailExists) {
-      throw new ConflictException('Email already in use');
     }
 
     const { plan_id, turnover_id, designated_person_id, ...establishmentData } = createEstablishmentDto;
@@ -73,7 +63,7 @@ export class EstablishmentService {
 
     if (search) {
       qb.where(
-        'establishment.name ILIKE :search OR establishment.business_name ILIKE :search OR establishment.rfc ILIKE :search OR establishment.email ILIKE :search OR establishment.contact_name ILIKE :search',
+        'establishment.name ILIKE :search OR establishment.business_name ILIKE :search OR establishment.rfc ILIKE :search',
         { search: `%${search}%` },
       );
     }

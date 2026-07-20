@@ -5,7 +5,7 @@ import { User } from "../../users/entities/user.entity";
 
 export enum EstablishmentStatus {
     PROSPECT = 'prospect',
-    ACTIVE = 'active',
+    CLIENT = 'client',
     DEACTIVATE = 'deactivate',
 }
 
@@ -55,15 +55,6 @@ export class Establishment {
     @Column()
     city: string;
 
-    @Column()
-    contact_name: string;
-
-    @Column()
-    contact_number: string;
-
-    @Column({ unique: true })
-    email: string;
-
     @ManyToOne(() => User, { eager: true })
     @JoinColumn({ name: 'designated_person_id' })
     designated_person: User;
@@ -72,23 +63,8 @@ export class Establishment {
     @JoinColumn({ name: 'plan_id' })
     plan: Plan;
 
-    @Column('float')
-    monthly_bill: number;
-
-    @Column()
-    cameras: number;
-
     @Column({ type: 'enum', enum: EstablishmentStatus, default: EstablishmentStatus.PROSPECT })
-    status: EstablishmentStatus;
-
-    @Column({ type: 'enum', enum: EstablishmentRisk })
-    risk: EstablishmentRisk;
-
-    @Column({ default: false })
-    gia: boolean;
-
-    @Column({ default: false })
-    covia: boolean;
+    establishment_status: EstablishmentStatus;
 
     @Column({ nullable: true })
     comment?: string;
