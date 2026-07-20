@@ -11,7 +11,7 @@ export class Document {
     name: string;
 
     @ManyToOne(() => DocumentalArea, { eager: true })
-    @JoinColumn({ name: 'areaId' })
+    @JoinColumn({ name: 'area_id' })
     area: DocumentalArea;
 
     @Column({ default: true })
@@ -21,7 +21,7 @@ export class Document {
     version: string;
 
     @Column({ type: 'date' })
-    expirationDate: Date;
+    expiration_date: Date;
 
     @Column()
     url: string;

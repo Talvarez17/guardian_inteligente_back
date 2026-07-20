@@ -13,10 +13,10 @@ export class User {
     name:string;
 
     @Column()
-    firstLastName:string;
+    first_last_name:string;
 
-    @Column({nullable: true})
-    secondLastName?:string;
+    @Column({ nullable: true })
+    second_last_name?:string;
 
     @Column({ unique: true })
     email: string;
@@ -29,13 +29,13 @@ export class User {
     status: boolean;
 
     @ManyToOne(() => Role, { eager: true })
-    @JoinColumn({ name: 'roleId' })
+    @JoinColumn({ name: 'role_id' })
     role: Role;
 
     @ManyToOne(() => DocumentalArea, { eager: true, nullable: true })
-    @JoinColumn({ name: 'documentalAreaId' })
-    documentalArea?: DocumentalArea;
+    @JoinColumn({ name: 'documental_area_id' })
+    documental_area?: DocumentalArea;
 
     @CreateDateColumn()
-    createdAt: Date;
+    created_at: Date;
 }

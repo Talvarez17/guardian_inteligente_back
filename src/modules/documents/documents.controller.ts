@@ -12,9 +12,9 @@ const documentFileSchema = {
   properties: {
     file: { type: 'string', format: 'binary' },
     name: { type: 'string', example: 'Política de privacidad' },
-    areaId: { type: 'number', example: 1 },
+    area_id: { type: 'number', example: 1 },
     version: { type: 'string', example: 'v1' },
-    expirationDate: { type: 'string', format: 'date', example: '2027-01-01' },
+    expiration_date: { type: 'string', format: 'date', example: '2027-01-01' },
     comments: { type: 'string', example: 'Documento revisado por legal' },
   },
 };
@@ -27,7 +27,7 @@ export class DocumentsController {
   @Post('/createDocument')
   @ApiOperation({ summary: 'Upload a new document and create its record' })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({ schema: { ...documentFileSchema, required: ['file', 'name', 'areaId', 'version', 'expirationDate'] } })
+  @ApiBody({ schema: { ...documentFileSchema, required: ['file', 'name', 'area_id', 'version', 'expiration_date'] } })
   @ApiResponse({ status: 201, description: 'Document successfully created' })
   @ApiResponse({ status: 400, description: 'File is required' })
   @ApiResponse({ status: 404, description: 'Documental area not found' })

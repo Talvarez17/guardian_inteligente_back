@@ -30,9 +30,9 @@ export class Plan {
 
     @ManyToMany(() => PlanFeature)
     @JoinTable({
-        name: 'plan_features',
-        joinColumn: { name: 'planId', referencedColumnName: 'id' },
-        inverseJoinColumn: { name: 'featureId', referencedColumnName: 'id' },
+        name: 'plan_features_relations',
+        joinColumn: { name: 'plan_id', referencedColumnName: 'id' },
+        inverseJoinColumn: { name: 'feature_id', referencedColumnName: 'id' },
     })
     features: PlanFeature[];
 

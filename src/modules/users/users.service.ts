@@ -13,7 +13,7 @@ import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { PaginatedResponse } from '../../common/dto/paginated-response.dto';
 import { buildPaginationMeta } from '../../common/utils/pagination.util';
 
-const SORTABLE_FIELDS = ['name', 'firstLastName', 'email', 'status', 'createdAt'];
+const SORTABLE_FIELDS = ['name', 'first_last_name', 'email', 'status', 'created_at'];
 
 
 @Injectable()
@@ -34,21 +34,21 @@ export class UsersService {
       throw new ConflictException('This email is already in use');
     }
 
-    const role = await this.rolesService.findOneRole(createUserDto.roleId);
+    const role = await this.rolesService.findOneRole(createUserDto.role_id);
 
-    const documentalArea = createUserDto.documentalAreaId
-      ? await this.documentalAreaService.findOneArea(createUserDto.documentalAreaId)
+    const documental_area = createUserDto.documental_area_id
+      ? await this.documentalAreaService.findOneArea(createUserDto.documental_area_id)
       : undefined;
 
     const hashPass = await bcrypt.hash(createUserDto.password, 10);
 
-    const { roleId, documentalAreaId, ...userData } = createUserDto;
+    const { role_id, documental_area_id, ...userData } = createUserDto;
 
     const user = this.usersRepository.create({
       ...userData,
       password: hashPass,
       role,
-      documentalArea,
+      documental_area,
     })
 
     return this.usersRepository.save(user);
@@ -57,7 +57,7 @@ export class UsersService {
   async findAllUsers(query: PaginationQueryDto): Promise<PaginatedResponse<User>> {
     const { page, limit, sortBy, order, search } = query;
 
-    const sortField = SORTABLE_FIELDS.includes(sortBy ?? '') ? sortBy! : 'createdAt';
+    const sortField = SORTABLE_FIELDS.includes(sortBy ?? '') ? sortBy! : 'created_at';
 
     const qb = this.usersRepository
       .createQueryBuilder('user')
@@ -65,7 +65,7 @@ export class UsersService {
 
     if (search) {
       qb.where(
-        'user.name ILIKE :search OR user.firstLastName ILIKE :search OR user.secondLastName ILIKE :search OR user.email ILIKE :search',
+        'user.name ILIKE :search OR user.first_last_name ILIKE :search OR user.second_last_name ILIKE :search OR user.email ILIKE :search',
         { search: `%${search}%` },
       );
     }
@@ -93,16 +93,16 @@ export class UsersService {
   async updateUser(id: string, updateUser: UpdateUserDto): Promise<User> {
     const user = await this.findOneUser(id);
 
-    const { roleId, documentalAreaId, ...updateData } = updateUser;
+    const { role_id, documental_area_id, ...updateData } = updateUser;
 
     Object.assign(user, updateData);
 
-    if (roleId) {
-      user.role = await this.rolesService.findOneRole(roleId);
+    if (role_id) {
+      user.role = await this.rolesService.findOneRole(role_id);
     }
 
-    if (documentalAreaId) {
-      user.documentalArea = await this.documentalAreaService.findOneArea(documentalAreaId);
+    if (documental_area_id) {
+      user.documental_area = await this.documentalAreaService.findOneArea(documental_area_id);
     }
 
     return this.usersRepository.save(user);

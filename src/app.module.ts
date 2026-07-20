@@ -15,6 +15,7 @@ import { PlansModule } from './modules/plans/plans.module';
 import { EstablishmentModule } from './modules/establishment/establishment.module';
 import { TurnoverModule } from './modules/turnover/turnover.module';
 import { DocumentsModule } from './modules/documents/documents.module';
+import { SeedModule } from './modules/seed/seed.module';
 
 @Module({
   imports: [UsersModule, AuthModule, ConfigModule.forRoot({ isGlobal: true }),
@@ -45,7 +46,8 @@ import { DocumentsModule } from './modules/documents/documents.module';
       PlansModule,
       EstablishmentModule,
       TurnoverModule,
-      DocumentsModule,],
+      DocumentsModule,
+      SeedModule,],
   controllers: [AppController],
   providers: [
     AppService,

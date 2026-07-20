@@ -10,7 +10,7 @@ import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { PaginatedResponse } from '../../common/dto/paginated-response.dto';
 import { buildPaginationMeta } from '../../common/utils/pagination.util';
 
-const SORTABLE_FIELDS = ['name', 'version', 'expirationDate', 'status'];
+const SORTABLE_FIELDS = ['name', 'version', 'expiration_date', 'status'];
 const STORAGE_FOLDER = 'documents';
 
 @Injectable()
@@ -35,9 +35,9 @@ export class DocumentsService {
       throw new ConflictException('Document already exists');
     }
 
-    const { areaId, ...documentData } = createDocumentDto;
+    const { area_id, ...documentData } = createDocumentDto;
 
-    const area = await this.documentalAreaService.findOneArea(areaId);
+    const area = await this.documentalAreaService.findOneArea(area_id);
 
     const url = await this.storageService.uploadFile(file, STORAGE_FOLDER);
 
@@ -87,12 +87,12 @@ export class DocumentsService {
   async updateDocument(id: number, updateDocumentDto: UpdateDocumentDto, file?: Express.Multer.File): Promise<Document> {
     const document = await this.findOneDocument(id);
 
-    const { areaId, ...updateData } = updateDocumentDto;
+    const { area_id, ...updateData } = updateDocumentDto;
 
     Object.assign(document, updateData);
 
-    if (areaId) {
-      document.area = await this.documentalAreaService.findOneArea(areaId);
+    if (area_id) {
+      document.area = await this.documentalAreaService.findOneArea(area_id);
     }
 
     if (file) {

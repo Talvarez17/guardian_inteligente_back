@@ -21,7 +21,7 @@ export class EstablishmentController {
   }
 
   @Get('/getEstablishments')
-  @ApiOperation({ summary: 'List all establishments (paginated, sortable, searchable by name/businessName/rfc/email/contactName)' })
+  @ApiOperation({ summary: 'List all establishments (paginated, sortable, searchable by name/business_name/rfc/email/contact_name)' })
   @ApiPaginatedQuery()
   @ApiResponse({ status: 200, description: 'Paginated list of establishments' })
   findAll(@Query() query: PaginationQueryDto) {

@@ -11,7 +11,7 @@ export class CreateEstablishmentDto {
 
     @ApiProperty({ example: 'Comercializadora Ejemplo S.A. de C.V.' })
     @IsString()
-    businessName: string;
+    business_name: string;
 
     @ApiProperty({ example: 'COE850101AB3', description: 'RFC de persona moral (12 caracteres)' })
     @Transform(({ value }) => typeof value === 'string' ? value.toUpperCase().trim() : value)
@@ -23,7 +23,7 @@ export class CreateEstablishmentDto {
     @ApiProperty({ example: 1, description: 'Id del giro comercial asignado a este establecimiento' })
     @IsInt()
     @IsPositive()
-    turnoverId: number;
+    turnover_id: number;
 
     @ApiProperty({ example: 'Av. Reforma' })
     @IsString()
@@ -35,17 +35,17 @@ export class CreateEstablishmentDto {
 
     @ApiProperty({ example: '123' })
     @IsString()
-    extNumber: string;
+    ext_number: string;
 
     @ApiPropertyOptional({ example: 'A' })
     @IsOptional()
     @IsString()
-    intNumber?: string;
+    int_number?: string;
 
     @ApiProperty({ example: '06000' })
     @IsString()
     @Matches(/^\d{5}$/, { message: 'Postal code must be 5 digits long' })
-    postalCode: string;
+    postal_code: string;
 
     @ApiProperty({ example: 'CDMX' })
     @IsString()
@@ -57,12 +57,12 @@ export class CreateEstablishmentDto {
 
     @ApiProperty({ example: 'Juan Pérez' })
     @IsString()
-    contactName: string;
+    contact_name: string;
 
     @ApiProperty({ example: '5512345678' })
     @IsString()
     @Matches(/^\d{10}$/, { message: 'Phone number must be 10 digits long' })
-    contactNumber: string;
+    contact_number: string;
 
     @ApiProperty({ example: 'contacto@ejemplo.com' })
     @IsEmail()
@@ -70,29 +70,29 @@ export class CreateEstablishmentDto {
 
     @ApiProperty({ example: '3fa85f64-5717-4562-b3fc-2c963f66afa6', description: 'Id del usuario designado como responsable de este establecimiento' })
     @IsUUID()
-    designatedPersonId: string;
+    designated_person_id: string;
 
     @ApiProperty({ example: 1, description: 'Id del plan asignado a este establecimiento' })
     @IsInt()
     @IsPositive()
-    planId: number;
+    plan_id: number;
 
     @ApiProperty({ example: 1500.5 })
     @IsNumber()
     @IsPositive()
-    monthlyBill: number;
+    monthly_bill: number;
 
     @ApiProperty({ example: 4 })
     @IsInt()
     @Min(0)
     cameras: number;
 
-    @ApiPropertyOptional({ enum: EstablishmentStatus, example: EstablishmentStatus.PROSPECTO, description: 'Si se omite, queda en "prospecto"' })
+    @ApiPropertyOptional({ enum: EstablishmentStatus, example: EstablishmentStatus.PROSPECT, description: 'Si se omite, queda en "prospecto"' })
     @IsOptional()
     @IsEnum(EstablishmentStatus)
     status?: EstablishmentStatus;
 
-    @ApiProperty({ enum: EstablishmentRisk, example: EstablishmentRisk.BAJO })
+    @ApiProperty({ enum: EstablishmentRisk, example: EstablishmentRisk.LOW })
     @IsEnum(EstablishmentRisk)
     risk: EstablishmentRisk;
 

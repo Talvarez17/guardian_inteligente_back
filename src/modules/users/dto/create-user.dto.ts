@@ -9,12 +9,12 @@ export class CreateUserDto {
 
     @ApiProperty({ example: 'Alvarez', required: true })
     @IsString()
-    firstLastName: string;
+    first_last_name: string;
 
     @ApiProperty({ example: 'Lopez', required: false })
     @IsString()
     @IsOptional()
-    secondLastName?: string;
+    second_last_name?: string;
 
     @ApiProperty({ example: 'usuario@guardian.com', required: true })
     @IsEmail()
@@ -33,12 +33,12 @@ export class CreateUserDto {
     @ApiProperty({ example: 1, description: 'Id of the role to assign to this user' })
     @IsInt()
     @IsPositive()
-    roleId: number
+    role_id: number
 
     @ApiProperty({ example: 1, description: 'Id of the documental area this user is responsible for', required: false })
     @IsOptional()
     @IsInt()
     @IsPositive()
-    documentalAreaId?: number
+    documental_area_id?: number
 
 }

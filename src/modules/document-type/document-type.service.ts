@@ -9,7 +9,7 @@ import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { PaginatedResponse } from '../../common/dto/paginated-response.dto';
 import { buildPaginationMeta } from '../../common/utils/pagination.util';
 
-const SORTABLE_FIELDS = ['name', 'categoryId', 'validity', 'status'];
+const SORTABLE_FIELDS = ['name', 'category_id', 'validity', 'status'];
 
 @Injectable()
 export class DocumentTypeService {
@@ -26,11 +26,11 @@ export class DocumentTypeService {
       throw new ConflictException('Type already exists');
     }
 
-    const category = await this.documentalAreaService.findOneArea(createDocumentTypeDto.categoryId)
+    const category = await this.documentalAreaService.findOneArea(createDocumentTypeDto.category_id)
 
     const type = this.documentalTypeRepository.create({
       ...createDocumentTypeDto,
-      categoryId: category.id
+      category_id: category.id
     })
 
     return this.documentalTypeRepository.save(type)

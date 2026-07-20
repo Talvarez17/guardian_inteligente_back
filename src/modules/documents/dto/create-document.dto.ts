@@ -12,7 +12,7 @@ export class CreateDocumentDto {
     @Type(() => Number)
     @IsInt()
     @IsPositive()
-    areaId: number;
+    area_id: number;
 
     @ApiProperty({ example: 'v1' })
     @IsString()
@@ -21,7 +21,7 @@ export class CreateDocumentDto {
     @ApiProperty({ example: '2027-01-01' })
     @Type(() => Date)
     @IsDate()
-    expirationDate: Date;
+    expiration_date: Date;
 
     @ApiPropertyOptional({ example: 'Documento revisado por legal' })
     @IsOptional()

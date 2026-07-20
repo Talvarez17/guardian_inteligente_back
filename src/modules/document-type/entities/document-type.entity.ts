@@ -10,7 +10,7 @@ export class DocumentType {
     name:string;
 
     @Column()
-    categoryId:number;
+    category_id:number;
 
     @Column()
     validity:number;

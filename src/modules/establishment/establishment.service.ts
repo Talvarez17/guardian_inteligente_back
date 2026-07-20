@@ -11,7 +11,7 @@ import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { PaginatedResponse } from '../../common/dto/paginated-response.dto';
 import { buildPaginationMeta } from '../../common/utils/pagination.util';
 
-const SORTABLE_FIELDS = ['name', 'businessName', 'rfc', 'city', 'state', 'status', 'risk', 'monthlyBill', 'cameras'];
+const SORTABLE_FIELDS = ['name', 'business_name', 'rfc', 'city', 'state', 'status', 'risk', 'monthly_bill', 'cameras'];
 
 @Injectable()
 export class EstablishmentService {
@@ -44,17 +44,17 @@ export class EstablishmentService {
       throw new ConflictException('Email already in use');
     }
 
-    const { planId, turnoverId, designatedPersonId, ...establishmentData } = createEstablishmentDto;
+    const { plan_id, turnover_id, designated_person_id, ...establishmentData } = createEstablishmentDto;
 
-    const plan = await this.plansService.findOnePlan(planId);
-    const turnover = await this.turnoverService.findOneTurnover(turnoverId);
-    const designatedPerson = await this.usersService.findOneUser(designatedPersonId);
+    const plan = await this.plansService.findOnePlan(plan_id);
+    const turnover = await this.turnoverService.findOneTurnover(turnover_id);
+    const designated_person = await this.usersService.findOneUser(designated_person_id);
 
     const establishment = this.establishmentRepository.create({
       ...establishmentData,
       plan,
       turnover,
-      designatedPerson,
+      designated_person,
     })
 
     return this.establishmentRepository.save(establishment);
@@ -69,11 +69,11 @@ export class EstablishmentService {
       .createQueryBuilder('establishment')
       .leftJoinAndSelect('establishment.plan', 'plan')
       .leftJoinAndSelect('establishment.turnover', 'turnover')
-      .leftJoinAndSelect('establishment.designatedPerson', 'designatedPerson');
+      .leftJoinAndSelect('establishment.designated_person', 'designated_person');
 
     if (search) {
       qb.where(
-        'establishment.name ILIKE :search OR establishment.businessName ILIKE :search OR establishment.rfc ILIKE :search OR establishment.email ILIKE :search OR establishment.contactName ILIKE :search',
+        'establishment.name ILIKE :search OR establishment.business_name ILIKE :search OR establishment.rfc ILIKE :search OR establishment.email ILIKE :search OR establishment.contact_name ILIKE :search',
         { search: `%${search}%` },
       );
     }
@@ -102,20 +102,20 @@ export class EstablishmentService {
   async updateEstablishment(id: string, updateEstablishmentDto: UpdateEstablishmentDto): Promise<Establishment> {
     const establishment = await this.findOneEstablishment(id);
 
-    const { planId, turnoverId, designatedPersonId, ...updateData } = updateEstablishmentDto;
+    const { plan_id, turnover_id, designated_person_id, ...updateData } = updateEstablishmentDto;
 
     Object.assign(establishment, updateData);
 
-    if (planId) {
-      establishment.plan = await this.plansService.findOnePlan(planId);
+    if (plan_id) {
+      establishment.plan = await this.plansService.findOnePlan(plan_id);
     }
 
-    if (turnoverId) {
-      establishment.turnover = await this.turnoverService.findOneTurnover(turnoverId);
+    if (turnover_id) {
+      establishment.turnover = await this.turnoverService.findOneTurnover(turnover_id);
     }
 
-    if (designatedPersonId) {
-      establishment.designatedPerson = await this.usersService.findOneUser(designatedPersonId);
+    if (designated_person_id) {
+      establishment.designated_person = await this.usersService.findOneUser(designated_person_id);
     }
 
     return this.establishmentRepository.save(establishment);

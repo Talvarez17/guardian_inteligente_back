@@ -4,15 +4,15 @@ import { Turnover } from "../../turnover/entities/turnover.entity";
 import { User } from "../../users/entities/user.entity";
 
 export enum EstablishmentStatus {
-    PROSPECTO = 'prospecto',
-    ACTIVO = 'activo',
-    BAJA = 'baja',
+    PROSPECT = 'prospect',
+    ACTIVE = 'active',
+    DEACTIVATE = 'deactivate',
 }
 
 export enum EstablishmentRisk {
-    BAJO = 'bajo',
-    MEDIO = 'medio',
-    ALTO = 'alto',
+    LOW = 'low',
+    MID = 'mid',
+    HIGH = 'high',
 }
 
 @Entity('establishments')
@@ -25,13 +25,13 @@ export class Establishment {
     name: string;
 
     @Column()
-    businessName: string;
+    business_name: string;
 
     @Column({ unique: true })
     rfc: string;
 
     @ManyToOne(() => Turnover, { eager: true })
-    @JoinColumn({ name: 'turnoverId' })
+    @JoinColumn({ name: 'turnover_id' })
     turnover: Turnover;
 
     @Column()
@@ -41,13 +41,13 @@ export class Establishment {
     neighborhood: string;
 
     @Column()
-    extNumber: string;
+    ext_number: string;
 
     @Column({ nullable: true })
-    intNumber?: string;
+    int_number?: string;
 
     @Column()
-    postalCode: string;
+    postal_code: string;
 
     @Column()
     state: string;
@@ -56,29 +56,29 @@ export class Establishment {
     city: string;
 
     @Column()
-    contactName: string;
+    contact_name: string;
 
     @Column()
-    contactNumber: string;
+    contact_number: string;
 
     @Column({ unique: true })
     email: string;
 
     @ManyToOne(() => User, { eager: true })
-    @JoinColumn({ name: 'designatedPersonId' })
-    designatedPerson: User;
+    @JoinColumn({ name: 'designated_person_id' })
+    designated_person: User;
 
     @ManyToOne(() => Plan, { eager: true })
-    @JoinColumn({ name: 'planId' })
+    @JoinColumn({ name: 'plan_id' })
     plan: Plan;
 
     @Column('float')
-    monthlyBill: number;
+    monthly_bill: number;
 
     @Column()
     cameras: number;
 
-    @Column({ type: 'enum', enum: EstablishmentStatus, default: EstablishmentStatus.PROSPECTO })
+    @Column({ type: 'enum', enum: EstablishmentStatus, default: EstablishmentStatus.PROSPECT })
     status: EstablishmentStatus;
 
     @Column({ type: 'enum', enum: EstablishmentRisk })
