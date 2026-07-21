@@ -1,6 +1,7 @@
 import { Column, Entity, PrimaryColumn, OneToOne, JoinColumn, ManyToOne } from "typeorm";
 import { Establishment } from "../../establishment/entities/establishment.entity";
 import { ClientRole } from "../../client-roles/entities/client-role.entity";
+import { CaseSensitive } from "../../../common/decorators/case-sensitive.decorator";
 
 @Entity('establishment_contacts')
 export class EstablishmentContact {
@@ -23,5 +24,6 @@ export class EstablishmentContact {
     contact_number: string;
 
     @Column()
+    @CaseSensitive()
     contact_email: string;
 }
