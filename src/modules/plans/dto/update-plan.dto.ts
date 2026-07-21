@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsArray, IsInt, IsOptional, IsString, Min } from "class-validator";
+import { IsArray, IsBoolean, IsInt, IsOptional, IsString, Min } from "class-validator";
 
 export class UpdatePlanDto {
 
@@ -24,4 +24,9 @@ export class UpdatePlanDto {
     @IsArray()
     @IsInt({ each: true })
     featureIds?: number[];
+
+    @ApiPropertyOptional({ example: true, description: 'Whether the plan is active' })
+    @IsOptional()
+    @IsBoolean()
+    status?: boolean;
 }

@@ -67,6 +67,52 @@ const PLAN_FEATURES = [
   'GIA (Aplicación de mensajería segura)',
 ];
 
+const PLANS_DATA: { name: string; amount: number; trial: number; comments: string; features: string[] }[] = [
+  {
+    name: 'Bienvenida',
+    amount: 199,
+    trial: 15,
+    comments: 'Ideal para negocios pequeños que están comenzando.',
+    features: [
+      'Conectividad con las autoridades',
+      'Plataforma de monitoreo',
+      'GIA (Aplicación de mensajería segura)',
+    ],
+  },
+  {
+    name: 'Bienvenida Plus',
+    amount: 299,
+    trial: 0,
+    comments: 'Para negocios en crecimiento que necesitan más respaldo.',
+    features: [
+      'Conectividad con las autoridades',
+      'Plataforma de monitoreo',
+      'Almacenamiento de grabación',
+      'GIA (Aplicación de mensajería segura)',
+    ],
+  },
+  {
+    name: 'Premium',
+    amount: 999,
+    trial: 0,
+    comments: 'Pensado para operaciones robustas con mayor exigencia.',
+    features: [
+      'Conectividad con las autoridades',
+      'Plataforma de monitoreo',
+      'Almacenamiento de grabación',
+      'Adhesión de software con biometría',
+      'GIA (Aplicación de mensajería segura)',
+    ],
+  },
+  {
+    name: 'Empresarial',
+    amount: 3499,
+    trial: 0,
+    comments: 'Cobertura completa para corporativos y cadenas.',
+    features: PLAN_FEATURES,
+  },
+];
+
 const TEST_USER_EMAIL = 'ana.martinez@test.com';
 const TEST_USER_PASSWORD = 'Prueba123!';
 const TEST_ESTABLISHMENT_RFC = 'GIT010101AB1';
@@ -126,9 +172,9 @@ export class SeedService implements OnApplicationBootstrap {
     const paymentForms = await Promise.all(PAYMENT_FORMS.map((name) => this.ensureNamed(this.paymentFormRepository, name)));
     const planFeatures = await Promise.all(PLAN_FEATURES.map((name) => this.ensureNamed(this.planFeatureRepository, name)));
 
-    const plan = await this.ensurePlan(planFeatures);
+    const plans = await this.ensurePlans(planFeatures);
     const testUser = await this.ensureTestUser(adminRole, documentalAreas[0]);
-    const establishment = await this.ensureEstablishment(turnovers[0], testUser, plan);
+    const establishment = await this.ensureEstablishment(turnovers[0], testUser, plans[0]);
 
     await this.ensureEstablishmentContact(establishment, clientRoles[0]);
     await this.ensureEstablishmentOperation(establishment);
@@ -144,7 +190,7 @@ export class SeedService implements OnApplicationBootstrap {
     repository: Repository<T>,
     name: string,
   ): Promise<T> {
-    const existing = await repository.findOne({ where: { name } as any });
+    const existing = await repository.findOne({ where: { name: name.toUpperCase() } as any });
     if (existing) return existing;
 
     const created = repository.create({ name } as unknown as T);
@@ -174,7 +220,7 @@ export class SeedService implements OnApplicationBootstrap {
   }
 
   private async ensureDocumentalArea(data: { area: string; description: string; color: string }): Promise<DocumentalArea> {
-    const existing = await this.documentalAreaRepository.findOne({ where: { area: data.area } });
+    const existing = await this.documentalAreaRepository.findOne({ where: { area: data.area.toUpperCase() } });
     if (existing) return existing;
 
     const saved = await this.documentalAreaRepository.save(this.documentalAreaRepository.create(data));
@@ -184,7 +230,7 @@ export class SeedService implements OnApplicationBootstrap {
   }
 
   private async ensureDocumentType(data: { name: string; category_id: number; validity: number }): Promise<DocumentType> {
-    const existing = await this.documentTypeRepository.findOne({ where: { name: data.name } });
+    const existing = await this.documentTypeRepository.findOne({ where: { name: data.name.toUpperCase() } });
     if (existing) return existing;
 
     const saved = await this.documentTypeRepository.save(this.documentTypeRepository.create(data));
@@ -193,25 +239,35 @@ export class SeedService implements OnApplicationBootstrap {
     return saved;
   }
 
-  private async ensurePlan(features: PlanFeature[]): Promise<Plan> {
-    const existing = await this.planRepository.findOne({ where: { name: 'Plan Integral' } });
-    if (existing) return existing;
+  private async ensurePlans(planFeatures: PlanFeature[]): Promise<Plan[]> {
+    const featureByName = new Map(planFeatures.map((feature) => [feature.name, feature]));
+    const plans: Plan[] = [];
 
-    const plan = this.planRepository.create({
-      name: 'Plan Integral',
-      amount: 1500,
-      currency: 'MXN',
-      frequency: 'Mensual',
-      trial: 30,
-      tries: 3,
-      comments: 'Plan de prueba generado por la semilla, incluye todas las funciones base',
-      features,
-    });
+    for (const data of PLANS_DATA) {
+      const existing = await this.planRepository.findOne({ where: { name: data.name.toUpperCase() }, relations: { features: true } });
+      if (existing) {
+        plans.push(existing);
+        continue;
+      }
 
-    const saved = await this.planRepository.save(plan);
-    this.logger.log(`Plan "Plan Integral" created`);
+      const plan = this.planRepository.create({
+        name: data.name,
+        amount: data.amount,
+        currency: 'MXN',
+        frequency: 'Mensual',
+        trial: data.trial,
+        tries: 3,
+        comments: data.comments,
+        features: data.features.map((name) => featureByName.get(name.toUpperCase())!),
+      });
 
-    return saved;
+      const saved = await this.planRepository.save(plan);
+      this.logger.log(`Plan "${data.name}" created`);
+
+      plans.push(saved);
+    }
+
+    return plans;
   }
 
   private async ensureTestUser(role: Role, documentalArea: DocumentalArea): Promise<User> {
@@ -359,7 +415,7 @@ export class SeedService implements OnApplicationBootstrap {
   }
 
   private async ensureDocument(area: DocumentalArea): Promise<void> {
-    const existing = await this.documentRepository.findOne({ where: { name: 'Aviso de privacidad' } });
+    const existing = await this.documentRepository.findOne({ where: { name: 'AVISO DE PRIVACIDAD' } });
     if (existing) return;
 
     const expirationDate = new Date();
