@@ -1,12 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Delete, Param, Query, ParseIntPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Delete, Param, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { PaymentRecordService } from './payment-record.service';
 import { CreatePaymentRecordDto } from './dto/create-payment-record.dto';
 import { UpdatePaymentRecordDto } from './dto/update-payment-record.dto';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { ApiPaginatedQuery } from '../../common/decorators/api-paginated-query.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('payment-records')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('payment-records')
 export class PaymentRecordController {
   constructor(private readonly paymentRecordService: PaymentRecordService) { }

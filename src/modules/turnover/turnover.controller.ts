@@ -1,10 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { TurnoverService } from './turnover.service';
 import { CreateTurnoverDto } from './dto/create-turnover.dto';
 import { UpdateTurnoverDto } from './dto/update-turnover.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('turnover')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('turnover')
 export class TurnoverController {
   constructor(private readonly turnoverService: TurnoverService) { }

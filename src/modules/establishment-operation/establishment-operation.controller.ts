@@ -1,9 +1,12 @@
-import { Controller, Get, Put, Body, Param } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { Controller, Get, Put, Body, Param, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { EstablishmentOperationService } from './establishment-operation.service';
 import { UpsertEstablishmentOperationDto } from './dto/upsert-establishment-operation.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('establishment-operations')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('establishment-operations')
 export class EstablishmentOperationController {
   constructor(private readonly establishmentOperationService: EstablishmentOperationService) { }

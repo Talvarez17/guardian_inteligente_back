@@ -1,9 +1,12 @@
-import { Controller, Get, Put, Body, Param } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { Controller, Get, Put, Body, Param, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { EstablishmentBillingService } from './establishment-billing.service';
 import { UpsertEstablishmentBillingDto } from './dto/upsert-establishment-billing.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('establishment-billing')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('establishment-billing')
 export class EstablishmentBillingController {
   constructor(private readonly establishmentBillingService: EstablishmentBillingService) { }

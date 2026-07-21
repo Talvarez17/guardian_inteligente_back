@@ -11,13 +11,14 @@ import { ApiPaginatedQuery } from '../../common/decorators/api-paginated-query.d
 
 @ApiTags('client-roles')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('admin')
+@UseGuards(JwtAuthGuard)
 @Controller('client-roles')
 export class ClientRolesController {
   constructor(private readonly clientRolesService: ClientRolesService) { }
 
   @Post('/createClientRole')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Create a new client role (admin only)' })
   @ApiResponse({ status: 201, description: 'Client role successfully created' })
   @ApiResponse({ status: 409, description: 'Client role already exists' })
@@ -26,7 +27,7 @@ export class ClientRolesController {
   }
 
   @Get('/getClientRoles')
-  @ApiOperation({ summary: 'List all client roles (admin only, paginated, sortable, searchable by name)' })
+  @ApiOperation({ summary: 'List all client roles (paginated, sortable, searchable by name)' })
   @ApiPaginatedQuery()
   @ApiResponse({ status: 200, description: 'Paginated list of client roles' })
   findAll(@Query() query: PaginationQueryDto) {
@@ -34,7 +35,7 @@ export class ClientRolesController {
   }
 
   @Get('/getClientRole/:id')
-  @ApiOperation({ summary: 'Get a client role by id (admin only)' })
+  @ApiOperation({ summary: 'Get a client role by id' })
   @ApiParam({ name: 'id', description: 'Client role id' })
   @ApiResponse({ status: 200, description: 'Client role found' })
   @ApiResponse({ status: 404, description: 'Client role not found' })
@@ -43,6 +44,8 @@ export class ClientRolesController {
   }
 
   @Patch('/updateClientRole/:id')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Update a client role (admin only)' })
   @ApiParam({ name: 'id', description: 'Client role id' })
   @ApiResponse({ status: 200, description: 'Client role successfully updated' })
@@ -52,6 +55,8 @@ export class ClientRolesController {
   }
 
   @Delete('/deleteClientRole/:id')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Deactivate a client role (admin only, soft delete)' })
   @ApiParam({ name: 'id', description: 'Client role id' })
   @ApiResponse({ status: 200, description: 'Client role successfully deactivated' })

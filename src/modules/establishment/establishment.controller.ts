@@ -1,12 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { EstablishmentService } from './establishment.service';
 import { CreateEstablishmentDto } from './dto/create-establishment.dto';
 import { UpdateEstablishmentDto } from './dto/update-establishment.dto';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { ApiPaginatedQuery } from '../../common/decorators/api-paginated-query.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('establishment')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('establishment')
 export class EstablishmentController {
   constructor(private readonly establishmentService: EstablishmentService) { }

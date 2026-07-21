@@ -11,13 +11,14 @@ import { ApiPaginatedQuery } from '../../common/decorators/api-paginated-query.d
 
 @ApiTags('payment-methods')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('admin')
+@UseGuards(JwtAuthGuard)
 @Controller('payment-methods')
 export class PaymentMethodController {
   constructor(private readonly paymentMethodService: PaymentMethodService) { }
 
   @Post('/createPaymentMethod')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Create a new payment method (admin only)' })
   @ApiResponse({ status: 201, description: 'Payment method successfully created' })
   @ApiResponse({ status: 409, description: 'Payment method already exists' })
@@ -26,7 +27,7 @@ export class PaymentMethodController {
   }
 
   @Get('/getPaymentMethods')
-  @ApiOperation({ summary: 'List all payment methods (admin only, paginated, sortable, searchable by name)' })
+  @ApiOperation({ summary: 'List all payment methods (paginated, sortable, searchable by name)' })
   @ApiPaginatedQuery()
   @ApiResponse({ status: 200, description: 'Paginated list of payment methods' })
   findAll(@Query() query: PaginationQueryDto) {
@@ -34,7 +35,7 @@ export class PaymentMethodController {
   }
 
   @Get('/getPaymentMethod/:id')
-  @ApiOperation({ summary: 'Get a payment method by id (admin only)' })
+  @ApiOperation({ summary: 'Get a payment method by id' })
   @ApiParam({ name: 'id', description: 'Payment method id' })
   @ApiResponse({ status: 200, description: 'Payment method found' })
   @ApiResponse({ status: 404, description: 'Payment method not found' })
@@ -43,6 +44,8 @@ export class PaymentMethodController {
   }
 
   @Patch('/updatePaymentMethod/:id')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Update a payment method (admin only)' })
   @ApiParam({ name: 'id', description: 'Payment method id' })
   @ApiResponse({ status: 200, description: 'Payment method successfully updated' })
@@ -52,6 +55,8 @@ export class PaymentMethodController {
   }
 
   @Delete('/deletePaymentMethod/:id')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Deactivate a payment method (admin only, soft delete)' })
   @ApiParam({ name: 'id', description: 'Payment method id' })
   @ApiResponse({ status: 200, description: 'Payment method successfully deactivated' })

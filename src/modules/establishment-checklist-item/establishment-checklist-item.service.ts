@@ -62,14 +62,28 @@ export class EstablishmentChecklistItemService {
     item.completed = dto.completed;
     item.completed_at = dto.completed ? new Date() : undefined;
 
-    if (file) {
-      if (item.document_url) {
-        await this.storageService.deleteFile(item.document_url);
-      }
+    const previousDocumentUrl = item.document_url;
+    let newDocumentUrl: string | undefined;
 
-      item.document_url = await this.storageService.uploadFile(file, STORAGE_FOLDER);
+    if (file) {
+      newDocumentUrl = await this.storageService.uploadFile(file, STORAGE_FOLDER);
+      item.document_url = newDocumentUrl;
     }
 
-    return this.checklistItemRepository.save(item);
+    try {
+      const saved = await this.checklistItemRepository.save(item);
+
+      if (newDocumentUrl && previousDocumentUrl) {
+        await this.storageService.deleteFile(previousDocumentUrl);
+      }
+
+      return saved;
+    } catch (error) {
+      if (newDocumentUrl) {
+        await this.storageService.deleteFile(newDocumentUrl);
+      }
+
+      throw error;
+    }
   }
 }

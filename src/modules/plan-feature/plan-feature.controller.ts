@@ -1,10 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { PlanFeatureService } from './plan-feature.service';
 import { CreatePlanFeatureDto } from './dto/create-plan-feature.dto';
 import { UpdatePlanFeatureDto } from './dto/update-plan-feature.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('plan-feature')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('plan-feature')
 export class PlanFeatureController {
   constructor(private readonly planFeatureService: PlanFeatureService) {}

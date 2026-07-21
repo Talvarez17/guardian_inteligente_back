@@ -11,13 +11,14 @@ import { ApiPaginatedQuery } from '../../common/decorators/api-paginated-query.d
 
 @ApiTags('checklist-item-types')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('admin')
+@UseGuards(JwtAuthGuard)
 @Controller('checklist-item-types')
 export class ChecklistItemTypeController {
   constructor(private readonly checklistItemTypeService: ChecklistItemTypeService) { }
 
   @Post('/createChecklistItemType')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Create a new checklist item type (admin only)' })
   @ApiResponse({ status: 201, description: 'Checklist item type successfully created' })
   @ApiResponse({ status: 409, description: 'Checklist item type already exists' })
@@ -26,7 +27,7 @@ export class ChecklistItemTypeController {
   }
 
   @Get('/getChecklistItemTypes')
-  @ApiOperation({ summary: 'List all checklist item types (admin only, paginated, sortable, searchable by name)' })
+  @ApiOperation({ summary: 'List all checklist item types (paginated, sortable, searchable by name)' })
   @ApiPaginatedQuery()
   @ApiResponse({ status: 200, description: 'Paginated list of checklist item types' })
   findAll(@Query() query: PaginationQueryDto) {
@@ -34,7 +35,7 @@ export class ChecklistItemTypeController {
   }
 
   @Get('/getChecklistItemType/:id')
-  @ApiOperation({ summary: 'Get a checklist item type by id (admin only)' })
+  @ApiOperation({ summary: 'Get a checklist item type by id' })
   @ApiParam({ name: 'id', description: 'Checklist item type id' })
   @ApiResponse({ status: 200, description: 'Checklist item type found' })
   @ApiResponse({ status: 404, description: 'Checklist item type not found' })
@@ -43,6 +44,8 @@ export class ChecklistItemTypeController {
   }
 
   @Patch('/updateChecklistItemType/:id')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Update a checklist item type (admin only)' })
   @ApiParam({ name: 'id', description: 'Checklist item type id' })
   @ApiResponse({ status: 200, description: 'Checklist item type successfully updated' })
@@ -52,6 +55,8 @@ export class ChecklistItemTypeController {
   }
 
   @Delete('/deleteChecklistItemType/:id')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Deactivate a checklist item type (admin only, soft delete)' })
   @ApiParam({ name: 'id', description: 'Checklist item type id' })
   @ApiResponse({ status: 200, description: 'Checklist item type successfully deactivated' })

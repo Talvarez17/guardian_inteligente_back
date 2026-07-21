@@ -1,8 +1,9 @@
-import { Controller, Get, Put, Body, Param, ParseIntPipe, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Put, Body, Param, ParseIntPipe, UseInterceptors, UploadedFile, UseGuards } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags, ApiOperation, ApiParam, ApiResponse, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { EstablishmentChecklistItemService } from './establishment-checklist-item.service';
 import { UpsertEstablishmentChecklistItemDto } from './dto/upsert-establishment-checklist-item.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 const checklistItemFileSchema = {
   type: 'object',
@@ -13,6 +14,8 @@ const checklistItemFileSchema = {
 };
 
 @ApiTags('establishment-checklist-items')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('establishment-checklist-items')
 export class EstablishmentChecklistItemController {
   constructor(private readonly establishmentChecklistItemService: EstablishmentChecklistItemService) { }

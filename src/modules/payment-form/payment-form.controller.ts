@@ -11,13 +11,14 @@ import { ApiPaginatedQuery } from '../../common/decorators/api-paginated-query.d
 
 @ApiTags('payment-forms')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('admin')
+@UseGuards(JwtAuthGuard)
 @Controller('payment-forms')
 export class PaymentFormController {
   constructor(private readonly paymentFormService: PaymentFormService) { }
 
   @Post('/createPaymentForm')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Create a new payment form (admin only)' })
   @ApiResponse({ status: 201, description: 'Payment form successfully created' })
   @ApiResponse({ status: 409, description: 'Payment form already exists' })
@@ -26,7 +27,7 @@ export class PaymentFormController {
   }
 
   @Get('/getPaymentForms')
-  @ApiOperation({ summary: 'List all payment forms (admin only, paginated, sortable, searchable by name)' })
+  @ApiOperation({ summary: 'List all payment forms (paginated, sortable, searchable by name)' })
   @ApiPaginatedQuery()
   @ApiResponse({ status: 200, description: 'Paginated list of payment forms' })
   findAll(@Query() query: PaginationQueryDto) {
@@ -34,7 +35,7 @@ export class PaymentFormController {
   }
 
   @Get('/getPaymentForm/:id')
-  @ApiOperation({ summary: 'Get a payment form by id (admin only)' })
+  @ApiOperation({ summary: 'Get a payment form by id' })
   @ApiParam({ name: 'id', description: 'Payment form id' })
   @ApiResponse({ status: 200, description: 'Payment form found' })
   @ApiResponse({ status: 404, description: 'Payment form not found' })
@@ -43,6 +44,8 @@ export class PaymentFormController {
   }
 
   @Patch('/updatePaymentForm/:id')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Update a payment form (admin only)' })
   @ApiParam({ name: 'id', description: 'Payment form id' })
   @ApiResponse({ status: 200, description: 'Payment form successfully updated' })
@@ -52,6 +55,8 @@ export class PaymentFormController {
   }
 
   @Delete('/deletePaymentForm/:id')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Deactivate a payment form (admin only, soft delete)' })
   @ApiParam({ name: 'id', description: 'Payment form id' })
   @ApiResponse({ status: 200, description: 'Payment form successfully deactivated' })
