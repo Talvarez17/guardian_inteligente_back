@@ -1,12 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { DocumentalAreaService } from './documental-area.service';
 import { CreateDocumentalAreaDto } from './dto/create-documental-area.dto';
 import { UpdateDocumentalAreaDto } from './dto/update-documental-area.dto';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { ApiPaginatedQuery } from '../../common/decorators/api-paginated-query.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('documental-area')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('documental-area')
 export class DocumentalAreaController {
   constructor(private readonly documentalAreaService: DocumentalAreaService) { }

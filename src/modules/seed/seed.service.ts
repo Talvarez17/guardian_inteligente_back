@@ -181,7 +181,7 @@ export class SeedService implements OnApplicationBootstrap {
     await this.ensureEstablishmentBilling(establishment, paymentMethods[1], paymentForms[0]);
     await this.ensureEstablishmentChecklistItems(establishment);
     await this.ensurePaymentRecord(establishment);
-    await this.ensureDocument(documentalAreas[0]);
+    await this.ensureDocument(establishment, documentalAreas[0]);
 
     void admin;
   }
@@ -414,20 +414,31 @@ export class SeedService implements OnApplicationBootstrap {
     this.logger.log(`Payment record "REC-0001" created`);
   }
 
-  private async ensureDocument(area: DocumentalArea): Promise<void> {
-    const existing = await this.documentRepository.findOne({ where: { name: 'AVISO DE PRIVACIDAD' } });
-    if (existing) return;
+  private async ensureDocument(establishment: Establishment, area: DocumentalArea): Promise<void> {
+    const existing = await this.documentRepository.findOne({
+      where: { name: 'AVISO DE PRIVACIDAD' },
+      relations: { establishment: true },
+    });
+    if (existing) {
+      if (!existing.establishment) {
+        existing.establishment = establishment;
+        await this.documentRepository.save(existing);
+        this.logger.log(`Document "Aviso de privacidad" backfilled with establishment "${establishment.name}"`);
+      }
+      return;
+    }
 
     const expirationDate = new Date();
     expirationDate.setFullYear(expirationDate.getFullYear() + 1);
 
     await this.documentRepository.save(
       this.documentRepository.create({
+        establishment,
         name: 'Aviso de privacidad',
         area,
         status: true,
         version: '1.0',
-        expiration_date: expirationDate,
+        expiration_date: expirationDate.toISOString().slice(0, 10),
         url: TEST_DOCUMENT_URL,
         comments: 'Documento de prueba generado por la semilla',
       }),

@@ -1,14 +1,20 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Unique } from "typeorm";
 import { DocumentalArea } from "../../documental-area/entities/documental-area.entity";
+import { Establishment } from "../../establishment/entities/establishment.entity";
 import { CaseSensitive } from "../../../common/decorators/case-sensitive.decorator";
 
 @Entity('documents')
+@Unique(['establishment', 'name'])
 export class Document {
 
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ unique: true })
+    @ManyToOne(() => Establishment, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'establishment_id' })
+    establishment: Establishment;
+
+    @Column()
     name: string;
 
     @ManyToOne(() => DocumentalArea, { eager: true })
@@ -22,7 +28,7 @@ export class Document {
     version: string;
 
     @Column({ type: 'date' })
-    expiration_date: Date;
+    expiration_date: string;
 
     @Column()
     @CaseSensitive()

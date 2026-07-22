@@ -1,8 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDate, IsInt, IsOptional, IsPositive, IsString } from "class-validator";
+import { IsDateString, IsInt, IsOptional, IsPositive, IsString, IsUUID } from "class-validator";
 
 export class CreateDocumentDto {
+
+    @ApiProperty({ example: '3fa85f64-5717-4562-b3fc-2c963f66afa6', description: 'Id del establecimiento al que pertenece este documento' })
+    @IsUUID()
+    establishment_id: string;
 
     @ApiProperty({ example: 'Política de privacidad' })
     @IsString()
@@ -19,9 +23,8 @@ export class CreateDocumentDto {
     version: string;
 
     @ApiProperty({ example: '2027-01-01' })
-    @Type(() => Date)
-    @IsDate()
-    expiration_date: Date;
+    @IsDateString()
+    expiration_date: string;
 
     @ApiPropertyOptional({ example: 'Documento revisado por legal' })
     @IsOptional()

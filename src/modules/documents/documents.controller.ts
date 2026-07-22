@@ -1,16 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, UseInterceptors, UploadedFile, UseGuards } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags, ApiOperation, ApiParam, ApiResponse, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { DocumentsService } from './documents.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { ApiPaginatedQuery } from '../../common/decorators/api-paginated-query.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 const documentFileSchema = {
   type: 'object',
   properties: {
     file: { type: 'string', format: 'binary' },
+    establishment_id: { type: 'string', example: '3fa85f64-5717-4562-b3fc-2c963f66afa6' },
     name: { type: 'string', example: 'Política de privacidad' },
     area_id: { type: 'number', example: 1 },
     version: { type: 'string', example: 'v1' },
@@ -20,6 +22,8 @@ const documentFileSchema = {
 };
 
 @ApiTags('documents')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('documents')
 export class DocumentsController {
   constructor(private readonly documentsService: DocumentsService) { }
@@ -27,7 +31,7 @@ export class DocumentsController {
   @Post('/createDocument')
   @ApiOperation({ summary: 'Upload a new document and create its record' })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({ schema: { ...documentFileSchema, required: ['file', 'name', 'area_id', 'version', 'expiration_date'] } })
+  @ApiBody({ schema: { ...documentFileSchema, required: ['file', 'establishment_id', 'name', 'area_id', 'version', 'expiration_date'] } })
   @ApiResponse({ status: 201, description: 'Document successfully created' })
   @ApiResponse({ status: 400, description: 'File is required' })
   @ApiResponse({ status: 404, description: 'Documental area not found' })
@@ -43,6 +47,16 @@ export class DocumentsController {
   @ApiResponse({ status: 200, description: 'Paginated list of documents' })
   findAll(@Query() query: PaginationQueryDto) {
     return this.documentsService.findAllDocuments(query);
+  }
+
+  @Get('/getDocumentsByEstablishment/:establishmentId')
+  @ApiOperation({ summary: 'List documents for an establishment (paginated, sortable, searchable by name)' })
+  @ApiParam({ name: 'establishmentId', description: 'Establishment UUID' })
+  @ApiPaginatedQuery()
+  @ApiResponse({ status: 200, description: 'Paginated list of documents for the establishment' })
+  @ApiResponse({ status: 404, description: 'Establishment not found' })
+  findAllByEstablishment(@Param('establishmentId') establishmentId: string, @Query() query: PaginationQueryDto) {
+    return this.documentsService.findAllByEstablishment(establishmentId, query);
   }
 
   @Get('/getOneDocument/:id')

@@ -4,10 +4,11 @@ import { DocumentsService } from './documents.service';
 import { DocumentsController } from './documents.controller';
 import { Document } from './entities/document.entity';
 import { DocumentalAreaModule } from '../documental-area/documental-area.module';
+import { EstablishmentModule } from '../establishment/establishment.module';
 import { StorageModule } from '../../common/storage/storage.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Document]), DocumentalAreaModule, StorageModule],
+  imports: [TypeOrmModule.forFeature([Document]), DocumentalAreaModule, EstablishmentModule, StorageModule],
   controllers: [DocumentsController],
   providers: [DocumentsService],
 })
