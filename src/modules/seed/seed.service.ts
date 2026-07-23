@@ -190,7 +190,7 @@ export class SeedService implements OnApplicationBootstrap {
     repository: Repository<T>,
     name: string,
   ): Promise<T> {
-    const existing = await repository.findOne({ where: { name: name.toUpperCase() } as any });
+    const existing = await repository.findOne({ where: { name } as any });
     if (existing) return existing;
 
     const created = repository.create({ name } as unknown as T);
@@ -220,7 +220,7 @@ export class SeedService implements OnApplicationBootstrap {
   }
 
   private async ensureDocumentalArea(data: { area: string; description: string; color: string }): Promise<DocumentalArea> {
-    const existing = await this.documentalAreaRepository.findOne({ where: { area: data.area.toUpperCase() } });
+    const existing = await this.documentalAreaRepository.findOne({ where: { area: data.area } });
     if (existing) return existing;
 
     const saved = await this.documentalAreaRepository.save(this.documentalAreaRepository.create(data));
@@ -230,7 +230,7 @@ export class SeedService implements OnApplicationBootstrap {
   }
 
   private async ensureDocumentType(data: { name: string; category_id: number; validity: number }): Promise<DocumentType> {
-    const existing = await this.documentTypeRepository.findOne({ where: { name: data.name.toUpperCase() } });
+    const existing = await this.documentTypeRepository.findOne({ where: { name: data.name } });
     if (existing) return existing;
 
     const saved = await this.documentTypeRepository.save(this.documentTypeRepository.create(data));
@@ -244,7 +244,7 @@ export class SeedService implements OnApplicationBootstrap {
     const plans: Plan[] = [];
 
     for (const data of PLANS_DATA) {
-      const existing = await this.planRepository.findOne({ where: { name: data.name.toUpperCase() }, relations: { features: true } });
+      const existing = await this.planRepository.findOne({ where: { name: data.name }, relations: { features: true } });
       if (existing) {
         plans.push(existing);
         continue;
@@ -258,7 +258,7 @@ export class SeedService implements OnApplicationBootstrap {
         trial: data.trial,
         tries: 3,
         comments: data.comments,
-        features: data.features.map((name) => featureByName.get(name.toUpperCase())!),
+        features: data.features.map((name) => featureByName.get(name)!),
       });
 
       const saved = await this.planRepository.save(plan);
@@ -416,7 +416,7 @@ export class SeedService implements OnApplicationBootstrap {
 
   private async ensureDocument(establishment: Establishment, area: DocumentalArea): Promise<void> {
     const existing = await this.documentRepository.findOne({
-      where: { name: 'AVISO DE PRIVACIDAD' },
+      where: { name: 'Aviso de privacidad' },
       relations: { establishment: true },
     });
     if (existing) {

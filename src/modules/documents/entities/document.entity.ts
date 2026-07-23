@@ -1,7 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Unique } from "typeorm";
 import { DocumentalArea } from "../../documental-area/entities/documental-area.entity";
 import { Establishment } from "../../establishment/entities/establishment.entity";
-import { CaseSensitive } from "../../../common/decorators/case-sensitive.decorator";
 
 @Entity('documents')
 @Unique(['establishment', 'name'])
@@ -31,7 +30,6 @@ export class Document {
     expiration_date: string;
 
     @Column()
-    @CaseSensitive()
     url: string;
 
     @Column({ nullable: true })

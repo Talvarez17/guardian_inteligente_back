@@ -25,7 +25,6 @@ import { EstablishmentOperationModule } from './modules/establishment-operation/
 import { EstablishmentBillingModule } from './modules/establishment-billing/establishment-billing.module';
 import { EstablishmentChecklistItemModule } from './modules/establishment-checklist-item/establishment-checklist-item.module';
 import { PaymentRecordModule } from './modules/payment-record/payment-record.module';
-import { UppercaseSubscriber } from './common/subscribers/uppercase.subscriber';
 
 @Module({
   imports: [UsersModule, AuthModule, ConfigModule.forRoot({ isGlobal: true }),
@@ -46,7 +45,6 @@ import { UppercaseSubscriber } from './common/subscribers/uppercase.subscriber';
         password: config.get<string>('DB_PASSWORD'),
         database: config.get<string>('DB_NAME'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        subscribers: [UppercaseSubscriber],
         synchronize: true,
       }),
     }),

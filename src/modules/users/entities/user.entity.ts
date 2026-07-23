@@ -2,7 +2,6 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, Jo
 import { Exclude } from 'class-transformer';
 import { Role } from '../../roles/entities/role.entity';
 import { DocumentalArea } from '../../documental-area/entities/documental-area.entity';
-import { CaseSensitive } from '../../../common/decorators/case-sensitive.decorator';
 
 @Entity('users')
 export class User {
@@ -20,12 +19,10 @@ export class User {
     second_last_name?:string;
 
     @Column({ unique: true })
-    @CaseSensitive()
     email: string;
 
     @Column({ select: false })
     @Exclude()
-    @CaseSensitive()
     password:string;
 
     @Column({default: true})
