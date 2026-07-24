@@ -31,7 +31,7 @@ export class PaymentMethodService {
   }
 
   async findAllPaymentMethods(query: PaginationQueryDto): Promise<PaginatedResponse<PaymentMethod>> {
-    const { page, limit, sortBy, order, search } = query;
+    const { page, limit, sortBy, order, search, onlyActive } = query;
 
     const sortField = SORTABLE_FIELDS.includes(sortBy ?? '') ? sortBy! : 'name';
 
@@ -39,6 +39,10 @@ export class PaymentMethodService {
 
     if (search) {
       qb.where('paymentMethod.name ILIKE :search', { search: `%${search}%` });
+    }
+
+    if (onlyActive) {
+      qb.andWhere('paymentMethod.status = :status', { status: true });
     }
 
     qb.orderBy(`paymentMethod.${sortField}`, order)

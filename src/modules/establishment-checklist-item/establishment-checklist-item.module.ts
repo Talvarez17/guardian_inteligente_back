@@ -5,14 +5,12 @@ import { EstablishmentChecklistItemController } from './establishment-checklist-
 import { EstablishmentChecklistItem } from './entities/establishment-checklist-item.entity';
 import { EstablishmentModule } from '../establishment/establishment.module';
 import { ChecklistItemTypeModule } from '../checklist-item-type/checklist-item-type.module';
-import { StorageModule } from '../../common/storage/storage.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([EstablishmentChecklistItem]),
     EstablishmentModule,
     ChecklistItemTypeModule,
-    StorageModule,
   ],
   controllers: [EstablishmentChecklistItemController],
   providers: [EstablishmentChecklistItemService],

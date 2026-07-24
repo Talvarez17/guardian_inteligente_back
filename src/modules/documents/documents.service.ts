@@ -56,7 +56,7 @@ export class DocumentsService {
   }
 
   async findAllDocuments(query: PaginationQueryDto): Promise<PaginatedResponse<Document>> {
-    const { page, limit, sortBy, order, search } = query;
+    const { page, limit, sortBy, order, search, onlyActive } = query;
 
     const sortField = SORTABLE_FIELDS.includes(sortBy ?? '') ? sortBy! : 'name';
 
@@ -66,6 +66,10 @@ export class DocumentsService {
 
     if (search) {
       qb.where('document.name ILIKE :search', { search: `%${search}%` });
+    }
+
+    if (onlyActive) {
+      qb.andWhere('document.status = :status', { status: true });
     }
 
     qb.orderBy(`document.${sortField}`, order)
@@ -80,7 +84,7 @@ export class DocumentsService {
   async findAllByEstablishment(establishmentId: string, query: PaginationQueryDto): Promise<PaginatedResponse<Document>> {
     await this.establishmentService.findOneEstablishment(establishmentId);
 
-    const { page, limit, sortBy, order, search } = query;
+    const { page, limit, sortBy, order, search, onlyActive } = query;
 
     const sortField = SORTABLE_FIELDS.includes(sortBy ?? '') ? sortBy! : 'name';
 
@@ -91,6 +95,10 @@ export class DocumentsService {
 
     if (search) {
       qb.andWhere('document.name ILIKE :search', { search: `%${search}%` });
+    }
+
+    if (onlyActive) {
+      qb.andWhere('document.status = :status', { status: true });
     }
 
     qb.orderBy(`document.${sortField}`, order)

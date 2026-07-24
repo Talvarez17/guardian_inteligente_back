@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards, Query, DefaultValuePipe, ParseBoolPipe } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { PlansService } from './plans.service';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
@@ -23,9 +23,10 @@ export class PlansController {
 
   @Get('/getPlans')
   @ApiOperation({ summary: 'List all plans' })
+  @ApiQuery({ name: 'onlyActive', required: false, type: Boolean, example: false })
   @ApiResponse({ status: 200, description: 'List of plans' })
-  findAll() {
-    return this.plansService.findAllPlans();
+  findAll(@Query('onlyActive', new DefaultValuePipe(false), ParseBoolPipe) onlyActive: boolean) {
+    return this.plansService.findAllPlans(onlyActive);
   }
 
   @Get('/getOnePlan/:id')

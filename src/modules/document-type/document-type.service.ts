@@ -37,7 +37,7 @@ export class DocumentTypeService {
   }
 
   async findAll(query: PaginationQueryDto): Promise<PaginatedResponse<DocumentType>> {
-    const { page, limit, sortBy, order, search } = query;
+    const { page, limit, sortBy, order, search, onlyActive } = query;
 
     const sortField = SORTABLE_FIELDS.includes(sortBy ?? '') ? sortBy! : 'name';
 
@@ -45,6 +45,10 @@ export class DocumentTypeService {
 
     if (search) {
       qb.where('documentType.name ILIKE :search', { search: `%${search}%` });
+    }
+
+    if (onlyActive) {
+      qb.andWhere('documentType.status = :status', { status: true });
     }
 
     qb.orderBy(`documentType.${sortField}`, order)

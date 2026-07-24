@@ -31,7 +31,7 @@ export class RolesService {
   }
 
   async findAllRoles(query: PaginationQueryDto): Promise<PaginatedResponse<Role>> {
-    const { page, limit, sortBy, order, search } = query;
+    const { page, limit, sortBy, order, search, onlyActive } = query;
 
     const sortField = SORTABLE_FIELDS.includes(sortBy ?? '') ? sortBy! : 'name';
 
@@ -39,6 +39,10 @@ export class RolesService {
 
     if (search) {
       qb.where('role.name ILIKE :search', { search: `%${search}%` });
+    }
+
+    if (onlyActive) {
+      qb.andWhere('role.status = :status', { status: true });
     }
 
     qb.orderBy(`role.${sortField}`, order)

@@ -31,7 +31,7 @@ export class ClientRolesService {
   }
 
   async findAllClientRoles(query: PaginationQueryDto): Promise<PaginatedResponse<ClientRole>> {
-    const { page, limit, sortBy, order, search } = query;
+    const { page, limit, sortBy, order, search, onlyActive } = query;
 
     const sortField = SORTABLE_FIELDS.includes(sortBy ?? '') ? sortBy! : 'name';
 
@@ -39,6 +39,10 @@ export class ClientRolesService {
 
     if (search) {
       qb.where('clientRole.name ILIKE :search', { search: `%${search}%` });
+    }
+
+    if (onlyActive) {
+      qb.andWhere('clientRole.status = :status', { status: true });
     }
 
     qb.orderBy(`clientRole.${sortField}`, order)

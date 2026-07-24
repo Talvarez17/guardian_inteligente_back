@@ -31,7 +31,7 @@ export class PaymentFormService {
   }
 
   async findAllPaymentForms(query: PaginationQueryDto): Promise<PaginatedResponse<PaymentForm>> {
-    const { page, limit, sortBy, order, search } = query;
+    const { page, limit, sortBy, order, search, onlyActive } = query;
 
     const sortField = SORTABLE_FIELDS.includes(sortBy ?? '') ? sortBy! : 'name';
 
@@ -39,6 +39,10 @@ export class PaymentFormService {
 
     if (search) {
       qb.where('paymentForm.name ILIKE :search', { search: `%${search}%` });
+    }
+
+    if (onlyActive) {
+      qb.andWhere('paymentForm.status = :status', { status: true });
     }
 
     qb.orderBy(`paymentForm.${sortField}`, order)

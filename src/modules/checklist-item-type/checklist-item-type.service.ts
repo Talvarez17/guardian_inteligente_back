@@ -31,7 +31,7 @@ export class ChecklistItemTypeService {
   }
 
   async findAllChecklistItemTypes(query: PaginationQueryDto): Promise<PaginatedResponse<ChecklistItemType>> {
-    const { page, limit, sortBy, order, search } = query;
+    const { page, limit, sortBy, order, search, onlyActive } = query;
 
     const sortField = SORTABLE_FIELDS.includes(sortBy ?? '') ? sortBy! : 'name';
 
@@ -39,6 +39,10 @@ export class ChecklistItemTypeService {
 
     if (search) {
       qb.where('checklistItemType.name ILIKE :search', { search: `%${search}%` });
+    }
+
+    if (onlyActive) {
+      qb.andWhere('checklistItemType.status = :status', { status: true });
     }
 
     qb.orderBy(`checklistItemType.${sortField}`, order)

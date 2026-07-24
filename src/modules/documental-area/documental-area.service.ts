@@ -30,7 +30,7 @@ export class DocumentalAreaService {
   }
 
   async findAllAreas(query: PaginationQueryDto): Promise<PaginatedResponse<DocumentalArea>> {
-    const { page, limit, sortBy, order, search } = query;
+    const { page, limit, sortBy, order, search, onlyActive } = query;
 
     const sortField = SORTABLE_FIELDS.includes(sortBy ?? '') ? sortBy! : 'area';
 
@@ -41,6 +41,10 @@ export class DocumentalAreaService {
         'documentalArea.area ILIKE :search OR documentalArea.description ILIKE :search',
         { search: `%${search}%` },
       );
+    }
+
+    if (onlyActive) {
+      qb.andWhere('documentalArea.status = :status', { status: true });
     }
 
     qb.orderBy(`documentalArea.${sortField}`, order)

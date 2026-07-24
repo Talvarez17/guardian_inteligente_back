@@ -55,7 +55,7 @@ export class UsersService {
   }
 
   async findAllUsers(query: PaginationQueryDto): Promise<PaginatedResponse<User>> {
-    const { page, limit, sortBy, order, search } = query;
+    const { page, limit, sortBy, order, search, onlyActive } = query;
 
     const sortField = SORTABLE_FIELDS.includes(sortBy ?? '') ? sortBy! : 'created_at';
 
@@ -68,6 +68,10 @@ export class UsersService {
         'user.name ILIKE :search OR user.first_last_name ILIKE :search OR user.second_last_name ILIKE :search OR user.email ILIKE :search',
         { search: `%${search}%` },
       );
+    }
+
+    if (onlyActive) {
+      qb.andWhere('user.status = :status', { status: true });
     }
 
     qb.orderBy(`user.${sortField}`, order)

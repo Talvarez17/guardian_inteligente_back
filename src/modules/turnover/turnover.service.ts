@@ -24,8 +24,10 @@ export class TurnoverService {
     return this.turnoverRepository.save(turnover);
   }
 
-  async findAllTurnovers(): Promise<Turnover[]> {
-    return this.turnoverRepository.find();
+  async findAllTurnovers(onlyActive: boolean = false): Promise<Turnover[]> {
+    return this.turnoverRepository.find({
+      where: onlyActive ? { status: true } : {},
+    });
   }
 
   async findOneTurnover(id: number): Promise<Turnover> {

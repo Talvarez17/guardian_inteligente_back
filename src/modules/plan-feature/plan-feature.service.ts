@@ -25,8 +25,10 @@ export class PlanFeatureService {
     return this.planFeatureRepository.save(feature);
   }
 
-  async findAllFeatures(): Promise<PlanFeature[]> {
-    return await this.planFeatureRepository.find();
+  async findAllFeatures(onlyActive: boolean = false): Promise<PlanFeature[]> {
+    return await this.planFeatureRepository.find({
+      where: onlyActive ? { status: true } : {},
+    });
   }
 
   async findOneFeature(id: number): Promise<PlanFeature> {

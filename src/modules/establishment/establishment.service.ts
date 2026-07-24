@@ -51,7 +51,7 @@ export class EstablishmentService {
   }
 
   async findAllEstablishments(query: PaginationQueryDto): Promise<PaginatedResponse<Establishment>> {
-    const { page, limit, sortBy, order, search } = query;
+    const { page, limit, sortBy, order, search, onlyActive } = query;
 
     const sortField = SORTABLE_FIELDS.includes(sortBy ?? '') ? sortBy! : 'name';
 
@@ -66,6 +66,10 @@ export class EstablishmentService {
         'establishment.name ILIKE :search OR establishment.business_name ILIKE :search OR establishment.rfc ILIKE :search',
         { search: `%${search}%` },
       );
+    }
+
+    if (onlyActive) {
+      qb.andWhere('establishment.active = :active', { active: true });
     }
 
     qb.orderBy(`establishment.${sortField}`, order)

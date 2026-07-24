@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards, Query, DefaultValuePipe, ParseBoolPipe } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { TurnoverService } from './turnover.service';
 import { CreateTurnoverDto } from './dto/create-turnover.dto';
 import { UpdateTurnoverDto } from './dto/update-turnover.dto';
@@ -22,9 +22,10 @@ export class TurnoverController {
 
   @Get('/getTurnovers')
   @ApiOperation({ summary: 'List all turnovers' })
+  @ApiQuery({ name: 'onlyActive', required: false, type: Boolean, example: false })
   @ApiResponse({ status: 200, description: 'List of turnovers' })
-  findAll() {
-    return this.turnoverService.findAllTurnovers();
+  findAll(@Query('onlyActive', new DefaultValuePipe(false), ParseBoolPipe) onlyActive: boolean) {
+    return this.turnoverService.findAllTurnovers(onlyActive);
   }
 
   @Get('/getOneTurnover/:id')

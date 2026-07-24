@@ -37,8 +37,11 @@ export class PlansService {
     return this.planRepository.save(plan);
   }
 
-  async findAllPlans(): Promise<Plan[]> {
-    return this.planRepository.find({ relations: { features: true } });
+  async findAllPlans(onlyActive: boolean = false): Promise<Plan[]> {
+    return this.planRepository.find({
+      where: onlyActive ? { status: true } : {},
+      relations: { features: true },
+    });
   }
 
   async findOnePlan(id: number): Promise<Plan> {

@@ -8,5 +8,6 @@ export function ApiPaginatedQuery() {
     ApiQuery({ name: 'sortBy', required: false, type: String }),
     ApiQuery({ name: 'order', required: false, enum: ['ASC', 'DESC'] }),
     ApiQuery({ name: 'search', required: false, type: String }),
+    ApiQuery({ name: 'onlyActive', required: false, type: Boolean, example: false }),
   );
 }
